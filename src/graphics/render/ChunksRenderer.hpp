@@ -11,6 +11,7 @@
 #include "util/ThreadPool.hpp"
 
 class Mesh;
+struct RawMesh;
 class Chunk;
 class Level;
 class BlocksRenderer;
@@ -19,7 +20,7 @@ struct EngineSettings;
 
 struct RendererResult {
     glm::ivec2 key;
-    BlocksRenderer* renderer;
+    std::shared_ptr<RawMesh> mesh;
 };
 
 class ChunksRenderer {

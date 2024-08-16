@@ -28,7 +28,7 @@ public:
 
     RendererResult operator()(const std::shared_ptr<Chunk>& chunk) override {
         renderer.build(chunk.get(), level->chunksStorage.get());
-        return RendererResult {glm::ivec2(chunk->x, chunk->z), &renderer};
+        return RendererResult {glm::ivec2(chunk->x, chunk->z), renderer.createRawMesh()};
     }
 };
 
@@ -41,7 +41,7 @@ ChunksRenderer::ChunksRenderer(
         "chunks-render-pool",
         [=](){return std::make_shared<RendererWorker>(level, cache, settings);}, 
         [=](RendererResult& mesh){
-            meshes[mesh.key] = mesh.renderer->createMesh();
+            meshes[mesh.key] = mesh.mesh->createMesh();
             inwork.erase(mesh.key);
         })
 {

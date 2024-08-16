@@ -1,10 +1,25 @@
 #pragma once
 
 #include <stdlib.h>
+#include <vector>
 #include "typedefs.hpp"
 
 struct vattr {
     ubyte size;
+};
+
+class Mesh;
+
+struct RawMesh {
+    std::vector<float> vertexBuffer;
+    std::vector<int> indexBuffer;
+    std::vector<vattr> attrs;
+    size_t vertexSize;
+
+    RawMesh(const float* vertexBuffer, size_t vertices, 
+            const int* indexBuffer, size_t indices, const vattr* attrs);
+
+    std::unique_ptr<Mesh> createMesh();
 };
 
 class Mesh {

@@ -12,9 +12,7 @@ WorldGenerator::WorldGenerator(
 ) : def(def), content(content) {
 }
 
-#include "util/timeutil.hpp"
 void WorldGenerator::generate(voxel* voxels, int chunkX, int chunkZ, int seed) {
-    timeutil::ScopeLogTimer log(555);
     auto heightmap = def.script->generateHeightmap(
         {chunkX*CHUNK_W, chunkZ*CHUNK_D}, {CHUNK_W, CHUNK_D}
     );

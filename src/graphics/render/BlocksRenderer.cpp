@@ -532,6 +532,14 @@ std::shared_ptr<Mesh> BlocksRenderer::createMesh() {
     );
 }
 
+std::unique_ptr<RawMesh> BlocksRenderer::createRawMesh() {
+    const vattr attrs[]{ {3}, {2}, {1}, {0} };
+    size_t vcount = vertexOffset / BlocksRenderer::VERTEX_SIZE;
+    return std::make_unique<RawMesh>(
+        vertexBuffer.get(), vcount, indexBuffer.get(), indexSize, attrs
+    );
+}
+
 std::shared_ptr<Mesh> BlocksRenderer::render(const Chunk* chunk, const ChunksStorage* chunks) {
     build(chunk, chunks);
     return createMesh();

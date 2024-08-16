@@ -13,6 +13,7 @@
 
 class Content;
 class Mesh;
+struct RawMesh;
 class Block;
 class Chunk;
 class Chunks;
@@ -148,5 +149,6 @@ public:
     void build(const Chunk* chunk, const ChunksStorage* chunks);
     std::shared_ptr<Mesh> render(const Chunk* chunk, const ChunksStorage* chunks);
     std::shared_ptr<Mesh> createMesh();
+    std::unique_ptr<RawMesh> createRawMesh();
     VoxelsVolume* getVoxelsBuffer() const;
 };

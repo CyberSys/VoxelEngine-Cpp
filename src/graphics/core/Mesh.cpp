@@ -1,8 +1,34 @@
 #include "Mesh.hpp"
+
+#include <cstring>
 #include <GL/glew.h>
 
 int Mesh::meshesCount = 0;
 int Mesh::drawCalls = 0;
+
+RawMesh::RawMesh(
+    const float* vertexBuffer, size_t vertices, 
+    const int* indexBuffer, size_t indices, const vattr* attrs
+) {
+    vertexSize = 0;
+    int vattrsCount = 0;
+    for (; attrs[vattrsCount].size; vattrsCount++) {
+        vertexSize += attrs[vattrsCount].size;
+    }
+    this->vertexBuffer.resize(vertices*vertexSize);
+    std::memcpy(this->vertexBuffer.data(), vertexBuffer, sizeof(float)*vertexSize*vertices);
+    this->indexBuffer.resize(indices);
+    std::memcpy(this->indexBuffer.data(), indexBuffer, sizeof(int)*indices);
+    this->attrs.resize(vattrsCount+1, {0});
+    std::memcpy(this->attrs.data(), attrs, sizeof(vattr)*vattrsCount);
+}
+
+std::unique_ptr<Mesh> RawMesh::createMesh() {
+    return std::make_unique<Mesh>(
+        vertexBuffer.data(), vertexBuffer.size()/vertexSize, 
+        indexBuffer.data(), indexBuffer.size(), attrs.data()
+    );
+}
 
 Mesh::Mesh(const float* vertexBuffer, size_t vertices, const int* indexBuffer, size_t indices, const vattr* attrs) : 
     ibo(0),
