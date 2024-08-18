@@ -306,6 +306,13 @@ namespace lua {
     inline lua::Integer tointeger(lua::State* L, int idx) {
         return lua_tointeger(L, idx);
     }
+    inline uint64_t touinteger(lua::State* L, int idx) {
+        auto val = lua_tointeger(L, idx);
+        if (val < 0) {
+            throw std::runtime_error("negative value");
+        }
+        return static_cast<uint64_t>(val);
+    }
     inline lua::Number tonumber(lua::State* L, int idx) {
         return lua_tonumber(L, idx);
     }
@@ -496,15 +503,24 @@ namespace lua {
     }
 
     int pushvalue(lua::State*, const dynamic::Value& value);
+
+    [[nodiscard]]
     dynamic::Value tovalue(lua::State*, int idx);
 
     inline bool getfield(lua::State* L, const std::string& name, int idx = -1) {
         lua_getfield(L, idx, name.c_str());
-        if (isnil(L, -1)) {
+        if (isnil(L, idx)) {
             pop(L);
             return false;
         }
         return true;
+    }
+
+    inline int requirefield(lua::State* L, const std::string& name, int idx = -1) {
+        if (getfield(L, name, idx)) {
+            return 1;
+        }
+        throw std::runtime_error("object has no member '"+name+"'");
     }
 
     inline bool hasfield(lua::State* L, const std::string& name, int idx = -1) {
